@@ -1,35 +1,42 @@
 "use strict";
 
-const argv = require("yargs").argv;
+const express = require("express");
+const cors = require("cors");
 
-const {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-} = require("./contacts");
+const contactsRouter = require("./api/contacts/contactsRouter");
 
-function invokeAction({ action, id, name, email, phone }) {
-  switch (action) {
-    case "list":
-      listContacts();
-      break;
+require("dotenv").config();
 
-    case "get":
-      getContactById(id);
-      break;
+class UserServer {
+  constructor() {
+    this.server = null;
+  }
 
-    case "add":
-      addContact(name, email, phone);
-      break;
+  start() {
+    this.initServer();
+    this.initMiddlewares();
+    this.initRoutes();
+    this.startListening();
+  }
 
-    case "remove":
-      removeContact(id);
-      break;
+  initServer() {
+    this.server = express();
+  }
 
-    default:
-      console.warn("\x1B[31m Unknown action type!");
+  initMiddlewares() {
+    this.server.use(express.json());
+    this.server.use(cors({ origin: "http://localhost:3000" }));
+  }
+
+  initRoutes() {
+    this.server.use("/contacts", contactsRouter);
+  }
+
+  startListening() {
+    this.server.listen(process.env.PORT, () => {
+      console.log("Server started lisnening opn port", process.env.PORT);
+    });
   }
 }
 
-invokeAction(argv);
+new UserServer().start();
