@@ -8,11 +8,7 @@ contactsRouter.get("/", ContactsController.listContacts);
 
 contactsRouter.get("/:contactId", ContactsController.getContactById);
 
-contactsRouter.patch(
-  "/:contactId",
-  ContactsController.validateContact,
-  ContactsController.updateContact
-);
+contactsRouter.patch("/:contactId", ContactsController.updateContact);
 
 contactsRouter.post(
   "/",
