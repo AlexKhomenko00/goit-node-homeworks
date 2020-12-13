@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const service = require("../../service");
+const service = require("./contactServices.js");
 
 class ContactsController {
   static async listContacts(req, res) {
@@ -58,24 +58,6 @@ class ContactsController {
       console.log(e);
       next(e);
     }
-  }
-
-  static validateContact(req, res, next) {
-    const createContactRules = Joi.object({
-      name: Joi.string().required(),
-      email: Joi.string().required(),
-      phone: Joi.string().required(),
-      password: Joi.string().required(),
-      token: Joi.string(),
-      subscription: Joi.string(),
-    });
-
-    const { error } = createContactRules.validate(req.body);
-
-    if (error) {
-      return res.status(400).json({ message: "missing required field" });
-    }
-    next();
   }
 }
 

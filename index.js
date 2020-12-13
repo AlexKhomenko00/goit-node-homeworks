@@ -34,7 +34,9 @@ class UserServer {
 
   initMiddlewares() {
     this.server.use(express.json());
-    this.server.use(cors({ origin: "http://localhost:3000" }));
+    this.server.use(
+      cors({ origin: `http://localhost:${process.env.DB_PORT}` })
+    );
   }
 
   initRoutes() {
@@ -45,8 +47,8 @@ class UserServer {
     connection
       .then(console.log("Database connection successful"))
       .then(() => {
-        this.server.listen(process.env.PORT, () => {
-          console.log("Server started lisnening opn port", process.env.PORT);
+        this.server.listen(process.env.DB_PORT, () => {
+          console.log("Server started lisnening opn port", process.env.DB_PORT);
         });
       })
       .catch((err) => {
