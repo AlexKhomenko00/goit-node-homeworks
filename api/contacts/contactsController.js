@@ -1,8 +1,7 @@
-const Joi = require("joi");
 const service = require("./contactServices.js");
 
 class ContactsController {
-  static async listContacts(req, res) {
+  static async listContacts(req, res, next) {
     try {
       const results = await service.getAllContacts();
       res.status(200).json(results);
@@ -12,7 +11,7 @@ class ContactsController {
     }
   }
 
-  static async getContactById({ params: { contactId } }, res) {
+  static async getContactById({ params: { contactId } }, res, next) {
     try {
       const contactById = await service.getContactById(contactId);
       return contactById

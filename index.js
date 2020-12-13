@@ -5,6 +5,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 
 const contactsRouter = require("./api/contacts/contactsRouter");
+const userRouter = require("./api/users/userRouter");
 
 require("dotenv").config();
 
@@ -41,6 +42,7 @@ class UserServer {
 
   initRoutes() {
     this.server.use("/contacts", contactsRouter);
+    this.server.use("/users", userRouter);
   }
 
   startListening() {
