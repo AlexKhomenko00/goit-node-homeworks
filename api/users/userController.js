@@ -2,9 +2,11 @@
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const fs = require("fs").promises;
 
 const service = require("./userServices");
 const { UnauthorizedError } = require("../helpers/errorsConstructor");
+const createAvatar = require("../helpers/userAvatarGenerator");
 
 class UserController {
   static costFactor = 4;
@@ -20,15 +22,26 @@ class UserController {
       } = req;
 
       const hashedPassword = await bcrypt.hash(password, this.costFactor);
+      const tmplAvatarName = await createAvatar(email);
+
+      await fs.rename(
+        `tmp/${tmplAvatarName}`,
+        `public/images/${tmplAvatarName}`,
+        (err) => {
+          if (err) throw new Error(err);
+        }
+      );
 
       const result = await service.createUser({
         email,
         password: hashedPassword,
+        avatarURL: `http://localhost:${process.env.DB_PORT}/images/${tmplAvatarName}`,
       });
 
       const user = {
         email: result.email,
         subscription: result.subscription,
+        avatarURL: result.avatarURL,
       };
 
       res.status(201).json(user);
@@ -104,6 +117,9 @@ class UserController {
   static async authorize(req, res, next) {
     try {
       const authorizationHeader = req.get("Authorization");
+      if (!authorizationHeader) {
+        next(new UnauthorizedError("User not authorized"));
+      }
       const token = authorizationHeader.replace("Bearer ", "");
 
       let userId;
@@ -126,6 +142,8 @@ class UserController {
       next(err);
     }
   }
+
+  static async updateUserAvatar(req, res, next) {}
 }
 
 module.exports = UserController;

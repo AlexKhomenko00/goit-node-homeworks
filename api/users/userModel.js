@@ -6,9 +6,8 @@ const user = new Schema({
     type: String,
     unique: true,
   },
-  password: {
-    type: String,
-  },
+  password: String,
+  avatarURL: String,
   subscription: {
     type: String,
     enum: ["free", "pro", "premium"],
