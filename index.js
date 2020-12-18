@@ -3,6 +3,7 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+require("./api/helpers/userAvatarGenerator");
 
 const contactsRouter = require("./api/contacts/contactsRouter");
 const userRouter = require("./api/users/userRouter");
@@ -43,6 +44,7 @@ class UserServer {
   initRoutes() {
     this.server.use("/contacts", contactsRouter);
     this.server.use("/users", userRouter);
+    this.server.use(express.static("public/"));
   }
 
   startListening() {
@@ -50,7 +52,7 @@ class UserServer {
       .then(console.log("Database connection successful"))
       .then(() => {
         this.server.listen(process.env.DB_PORT, () => {
-          console.log("Server started lisnening opn port", process.env.DB_PORT);
+          console.log("Server started lisnening on port", process.env.DB_PORT);
         });
       })
       .catch((err) => {
