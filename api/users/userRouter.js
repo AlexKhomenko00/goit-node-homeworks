@@ -15,11 +15,9 @@ userRouter.post(
   UserController.authorize,
   upload.single("avatar"),
   (req, res) =>
-    res
-      .status(200)
-      .send({
-        avatarURL: `http://localhost:${process.env.DB_PORT}/images/${req.file.filename}`,
-      })
+    res.status(200).send({
+      avatarURL: `http://localhost:${process.env.DB_PORT}/images/${req.file.filename}`,
+    })
 );
 
 userRouter.post(
@@ -45,5 +43,9 @@ userRouter.get(
   UserController.authorize,
   UserController.getCurrentUser
 );
+
+// userRouter.get("/auth/verify/:verificationToken", UserController.verifyMail);
+
+userRouter.get("/auth/verify/:verificationToken", UserController.verifyMail);
 
 module.exports = userRouter;
